@@ -1,0 +1,50 @@
+package com.clone.petclinic.domain;
+
+import com.clone.petclinic.controller.dto.OwnerJoinAndEditRequestDto;
+import com.clone.petclinic.domain.base.Address;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+public class Owner {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "owner_id")
+    private Long id;
+
+    @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
+
+    @Embedded
+    private Address address;
+
+    @Column(nullable = false, length = 13)
+    private String phone;
+
+    @OneToMany(mappedBy = "owner")
+    private Set<Pet> pets = new HashSet<Pet>();
+
+    //====연관관계 편의 메서드====
+    public void editOwner(OwnerJoinAndEditRequestDto dto) {
+        this.firstName = dto.getFirstName();
+        this.lastName = dto.getLastName();
+        this.address.editAddress(dto.getCity(), dto.getStreet(), dto.getZipcode());
+        this.phone = dto.getPhone();
+    }
+}
