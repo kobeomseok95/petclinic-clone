@@ -5,7 +5,6 @@ import com.clone.petclinic.domain.Owner;
 import com.clone.petclinic.domain.base.Address;
 
 import java.util.HashSet;
-import java.util.Set;
 
 public class OwnerDummy {
     public static Owner createOwner() {

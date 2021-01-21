@@ -2,12 +2,11 @@ package com.clone.petclinic.repository;
 
 import com.clone.petclinic.controller.dto.OwnerJoinAndEditRequestDto;
 import com.clone.petclinic.controller.dto.PetJoinAndEditRequestDto;
-import com.clone.petclinic.domain.Owner;
-import com.clone.petclinic.domain.Pet;
-import com.clone.petclinic.domain.PetType;
+import com.clone.petclinic.domain.*;
 import com.clone.petclinic.domain.base.Address;
 import com.clone.petclinic.dummy.OwnerDummy;
 import com.clone.petclinic.dummy.PetDummy;
+import com.clone.petclinic.dummy.VisitDummy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -42,6 +41,9 @@ class RepositoryTest {
     @Autowired
     VisitRepository visitRepository;
 
+    @Autowired
+    VetRepository vetRepository;
+
     @Test
     void Owner등록() {
 
@@ -53,36 +55,6 @@ class RepositoryTest {
 
         //then
         assertNotNull(save.getId());
-    }
-
-    @Test
-    void Owner가_여러명_있을_경우() throws Exception {
-
-        //given
-        for (int i = 0; i < 5; i++) {
-            Owner owner = OwnerDummy.multipleCreateOwner(i);
-            ownerRepository.save(owner);
-        }
-
-        //when
-        Collection<Owner> owners = ownerRepository.findByLastName("ko");
-
-        //then
-        assertEquals(owners.size(), 5);
-    }
-
-    @Test
-    void Owner가_한명_있을_경우() throws Exception {
-
-        //given
-        Owner owner = OwnerDummy.createOwner();
-        ownerRepository.save(owner);
-
-        //when
-        Collection<Owner> findOwner = ownerRepository.findByLastName("o");
-
-        //then
-        assertEquals(findOwner.size(), 1);
     }
 
     @Test
@@ -128,38 +100,8 @@ class RepositoryTest {
         );
     }
 
-
     @Test
-    void Owner조회시_pet_pettype까지_한번에_가져와야한다() throws Exception {
-
-        //given
-        Owner owner = OwnerDummy.createOwner();
-        ownerRepository.save(owner);
-
-        Pet pet1 = PetDummy.createPet(petRepository.getPetTypes().get(0));
-        pet1.addOwner(owner);
-        Pet savedPet1 = petRepository.save(pet1);
-
-        Pet pet2 = PetDummy.createPet(petRepository.getPetTypes().get(0));
-        pet2.addOwner(owner);
-        Pet savedPet2 = petRepository.save(pet2);
-
-        em.flush();
-        em.clear();
-        //when
-        logger.info("*********************************조회 쿼리 체크*********************************");
-        Collection<Owner> findOwners = ownerRepository.findByLastName("ko");
-        logger.info("*********************************조회 쿼리 이후*********************************");
-        //then
-        assertAll(
-                () -> assertEquals(findOwners.size(), 1),
-                () -> assertNotNull(findOwners.iterator().next().getPets()),
-                () -> assertEquals(findOwners.iterator().next().getPets().size(), 2)
-        );
-    }
-
-    @Test
-    void Pet_수정() throws Exception{
+    void Pet_수정() throws Exception {
 
         //given
         Owner owner = OwnerDummy.createOwner();
@@ -173,15 +115,117 @@ class RepositoryTest {
         //when
         pet.editPet(dto, type);
         em.flush();
+        em.clear();
 
         //then
         Pet findPet = petRepository.findById(pet.getId()).orElseThrow();
         assertAll(
-                () -> assertEquals(findPet.getOwner(), owner),
-                () -> assertEquals(findPet.getPetType(), type),
-                () -> assertEquals(owner.getPets().size(), 1),
-                () -> assertEquals(owner.getPets().iterator().next(), findPet)
+                () -> assertEquals(findPet.getOwner().getId(), owner.getId()),
+                () -> assertEquals(pet.getPetType().getName(), "snake"),
+                () -> assertEquals(findPet.getOwner().getPets().size(), 1),
+                () -> assertEquals(findPet.getOwner().getPets().iterator().next().getId(), findPet.getId())
         );
+    }
+
+    @Test
+    void visit등록() throws Exception {
+
+        //given
+        Owner owner = OwnerDummy.createOwner();
+        ownerRepository.save(owner);
+
+        Pet pet = PetDummy.createPet(petRepository.getPetTypes().get(0));
+        pet.addOwner(owner);
+        petRepository.save(pet);
+
+        //when
+        Visit visit = VisitDummy.createVisit();
+        visit.addPet(pet);
+        visitRepository.save(visit);
+
+        Pet findPet = petRepository.findById(pet.getId()).orElseThrow();
+        assertEquals(findPet.getVisits().iterator().next().getId(), visit.getId());
+    }
+
+    @Test
+    void Owner_단건_조회() throws Exception {
+
+        //given
+        Owner owner = OwnerDummy.createOwner();
+        Pet pet1 = PetDummy.createPet(petRepository.getPetTypes().get(1));
+        Pet pet2 = PetDummy.createPet(petRepository.getPetTypes().get(3));
+        Visit visit1 = VisitDummy.createVisit();
+        Visit visit2 = VisitDummy.createVisit();
+
+        //연관관계
+        visit1.addPet(pet1);
+        visit2.addPet(pet2);
+        pet1.addOwner(owner);
+        pet2.addOwner(owner);
+
+        // 저장
+        ownerRepository.save(owner);
+        petRepository.save(pet1);
+        petRepository.save(pet2);
+        visitRepository.save(visit1);
+        visitRepository.save(visit2);
+        em.flush();
+        em.clear();
+
+        //when
+        Owner findOwner = ownerRepository.findByIdFetch(owner.getId()).orElseThrow();
+
+        //then
+        assertEquals(findOwner.getPets().size(), 2);
+        for (Pet pet : findOwner.getPets()) {
+            assertNotNull(pet.getPetType());
+            assertEquals(pet.getVisits().size(), 1);
+        }
+    }
+
+    @Test
+    void Owner_다수_조회() throws Exception {
+        //given
+        Owner owner1 = OwnerDummy.createOwner();
+        Pet pet1 = PetDummy.createPet(petRepository.getPetTypes().get(1));
+        Pet pet2 = PetDummy.createPet(petRepository.getPetTypes().get(3));
+        Visit visit1 = VisitDummy.createVisit();
+        Visit visit2 = VisitDummy.createVisit();
+        Owner owner2 = OwnerDummy.createOwner();
+        Owner owner3 = OwnerDummy.createOwner();
+
+        //연관관계
+        visit1.addPet(pet1);
+        visit2.addPet(pet2);
+        pet1.addOwner(owner1);
+        pet2.addOwner(owner1);
+
+        // 저장
+        ownerRepository.save(owner1);
+        ownerRepository.save(owner2);
+        ownerRepository.save(owner3);
+        petRepository.save(pet1);
+        petRepository.save(pet2);
+        visitRepository.save(visit1);
+        visitRepository.save(visit2);
+        em.flush();
+        em.clear();
+
+        //when
+        Collection<Owner> owners = ownerRepository.findByLastName("o");
+
+        //then
+        assertEquals(owners.size(), 3);
+        for (Owner owner : owners) {
+            assertNotNull(owner.getPets());
+        }
+    }
+
+    @Test
+    void vets_조회() throws Exception{
+        Collection<Vet> vets = vetRepository.findAllFetch();
+
+        assertEquals(vets.size(), 6);
     }
 }
 
