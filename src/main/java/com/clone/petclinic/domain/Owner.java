@@ -41,10 +41,14 @@ public class Owner {
     private Set<Pet> pets = new HashSet<Pet>();
 
     //====연관관계 편의 메서드====
-    public void editOwner(OwnerJoinAndEditRequestDto dto) {
+    public void convertOwner(OwnerJoinAndEditRequestDto dto) {
         this.firstName = dto.getFirstName();
         this.lastName = dto.getLastName();
-        this.address.editAddress(dto.getCity(), dto.getStreet(), dto.getZipcode());
+        this.address = Address.builder()
+                .city(dto.getCity())
+                .street(dto.getStreet())
+                .zipcode(dto.getZipcode())
+                .build();
         this.phone = dto.getPhone();
     }
 }

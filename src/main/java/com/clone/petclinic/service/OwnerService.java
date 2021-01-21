@@ -1,14 +1,17 @@
 package com.clone.petclinic.service;
 
 import com.clone.petclinic.controller.dto.OwnerJoinAndEditRequestDto;
+import com.clone.petclinic.controller.dto.OwnerMultipleResponseDto;
+import com.clone.petclinic.controller.dto.OwnerOneResponseDto;
 import com.clone.petclinic.domain.Owner;
-import com.clone.petclinic.domain.base.Address;
 import com.clone.petclinic.repository.OwnerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -20,34 +23,28 @@ public class OwnerService {
 
     @Transactional
     public Long join(OwnerJoinAndEditRequestDto dto) {
-        Owner owner = Owner.builder()
-                .firstName(dto.getFirstName())
-                .lastName(dto.getLastName())
-                .address(
-                        Address.builder()
-                                .city(dto.getCity())
-                                .street(dto.getStreet())
-                                .zipcode(dto.getZipcode())
-                                .build()
-                )
-                .phone(dto.getPhone())
-                .build();
+        Owner owner = new Owner();
+        owner.convertOwner(dto);
 
-        Owner saveOwner = ownerRepository.save(owner);
-        return saveOwner.getId();
+        return ownerRepository.save(owner).getId();
     }
 
     @Transactional
-    public void edit(Long id, OwnerJoinAndEditRequestDto dto) {
-        Owner owner = ownerRepository.findById(id).orElseThrow();
-        owner.editOwner(dto);
+    public Long edit(OwnerJoinAndEditRequestDto dto){
+        Owner owner = ownerRepository.findById(dto.getId()).orElseThrow();
+        owner.convertOwner(dto);
+        return owner.getId();
     }
 
-    public List<Owner> findAll() {
-        return null;
+    public OwnerOneResponseDto findOne(Long ownerId){
+        Owner owner = ownerRepository.findByIdFetch(ownerId).orElseThrow();
+        return new OwnerOneResponseDto(owner);
     }
 
-    public List<Owner> findByLastname() {
-        return null;
+    public List<OwnerMultipleResponseDto> findByLastName(String lastName){
+        Collection<Owner> owners = ownerRepository.findByLastName(lastName);
+        return owners.stream()
+                .map(OwnerMultipleResponseDto::new)
+                .collect(Collectors.toList());
     }
 }

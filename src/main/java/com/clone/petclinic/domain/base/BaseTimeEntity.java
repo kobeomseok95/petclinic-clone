@@ -13,9 +13,10 @@ import java.time.format.DateTimeFormatter;
 @MappedSuperclass
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class BaseTimeEntity {
 
-    private LocalDate date;
+    protected LocalDate date;
 
     protected void editBirth(String birth) {
         String[] s = birth.split("-");

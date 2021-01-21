@@ -23,10 +23,4 @@ public class Address {
 
     @Column(nullable = false)
     private String zipcode;
-
-    public void editAddress(String city, String street, String zipcode) {
-        this.city = city;
-        this.street = street;
-        this.zipcode = zipcode;
-    }
 }

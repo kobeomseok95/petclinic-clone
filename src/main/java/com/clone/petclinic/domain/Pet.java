@@ -21,7 +21,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 public class Pet extends BaseTimeEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pet_id")
