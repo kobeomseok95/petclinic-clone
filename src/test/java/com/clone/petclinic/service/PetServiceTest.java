@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
 
@@ -59,7 +58,7 @@ class PetServiceTest {
     void pet_수정화면() throws Exception {
 
         //given
-        when(petRepository.findByIdForEditView(any(Long.class)))
+        when(petRepository.findByPetIdWithOwner(any(Long.class)))
                 .thenReturn((Optional.of(createPet())));
 
         //when
@@ -67,7 +66,7 @@ class PetServiceTest {
 
         //then
         verify(petRepository, times(1))
-                .findByIdForEditView(any(Long.class));
+                .findByPetIdWithOwner(any(Long.class));
         assertAll(
                 () -> assertNotNull(petJoinAndEditDto),
                 () -> assertEquals(petJoinAndEditDto.getPetId(), createPet().getId()),

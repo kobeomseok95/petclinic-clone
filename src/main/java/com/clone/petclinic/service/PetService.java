@@ -33,7 +33,7 @@ public class PetService {
 
     @Transactional(readOnly = true)
     public PetJoinAndEditDto editPetView(Long id){
-        Pet pet = petRepository.findByIdForEditView(id).orElseThrow();
+        Pet pet = petRepository.findByPetIdWithOwner(id).orElseThrow();
 
         PetJoinAndEditDto dto = new PetJoinAndEditDto();
         dto.convertPetIntoDto(pet);

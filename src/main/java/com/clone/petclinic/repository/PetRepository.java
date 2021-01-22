@@ -22,5 +22,5 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
 
     @Query("select p from Pet p join fetch p.owner o where p.id = :id")
     @Transactional(readOnly = true)
-    Optional<Pet> findByIdForEditView(@Param("id") Long id);
+    Optional<Pet> findByPetIdWithOwner(@Param("id") Long id);
 }

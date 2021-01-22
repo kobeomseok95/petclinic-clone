@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
-public class VestService {
+public class VetService {
 
     private final VetRepository vetRepository;
     

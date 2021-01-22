@@ -108,7 +108,7 @@ class RepositoryTest {
         petRepository.save(pet);
 
         //when
-        Pet findPet = petRepository.findByIdForEditView(pet.getId()).orElseThrow();
+        Pet findPet = petRepository.findByPetIdWithOwner(pet.getId()).orElseThrow();
 
         //then
         assertEquals(findPet.getId(), pet.getId());

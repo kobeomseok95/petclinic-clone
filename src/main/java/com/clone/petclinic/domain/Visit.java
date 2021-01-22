@@ -1,5 +1,6 @@
 package com.clone.petclinic.domain;
 
+import com.clone.petclinic.controller.dto.VisitViewDto;
 import com.clone.petclinic.domain.base.BaseTimeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,5 +42,11 @@ public class Visit extends BaseTimeEntity {
         }
         this.pet = pet;
         pet.getVisits().add(this);
+    }
+
+    public void convertDtoIntoVisit(VisitViewDto dto, Pet pet) {
+        this.description = dto.getDescription();
+        this.date = pet.getDate();
+        addPet(pet);
     }
 }
