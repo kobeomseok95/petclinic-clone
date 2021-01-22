@@ -114,6 +114,7 @@ class OwnerServiceTest {
         }
     }
 
+
     private Collection<Owner> getOwners() {
         return Arrays.asList(
                 Owner.builder().id(1L).firstName("owner1").lastName("owner1").phone("test1")

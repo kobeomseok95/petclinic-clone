@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PetRepository extends JpaRepository<Pet, Long> {
 
@@ -18,4 +19,8 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
     @Query("select pt from PetType pt where pt.name = :name")
     @Transactional(readOnly = true)
     PetType findByPetTypeName(@Param("name") String name);
+
+    @Query("select p from Pet p join fetch p.owner o where p.id = :id")
+    @Transactional(readOnly = true)
+    Optional<Pet> findByIdForEditView(@Param("id") Long id);
 }

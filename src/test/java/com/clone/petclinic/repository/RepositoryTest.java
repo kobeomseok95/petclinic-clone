@@ -1,13 +1,11 @@
 package com.clone.petclinic.repository;
 
 import com.clone.petclinic.controller.dto.OwnerJoinAndEditRequestDto;
-import com.clone.petclinic.controller.dto.PetJoinAndEditRequestDto;
+import com.clone.petclinic.controller.dto.PetJoinAndEditDto;
 import com.clone.petclinic.domain.*;
-import com.clone.petclinic.domain.base.Address;
 import com.clone.petclinic.dummy.OwnerDummy;
 import com.clone.petclinic.dummy.PetDummy;
 import com.clone.petclinic.dummy.VisitDummy;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.security.cert.CollectionCertStoreParameters;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -101,6 +98,25 @@ class RepositoryTest {
     }
 
     @Test
+    void Pet_수정_view()throws Exception {
+
+        //given
+        Owner owner = OwnerDummy.createOwner();
+        ownerRepository.save(owner);
+        Pet pet = PetDummy.createPet(petRepository.getPetTypes().get(0));
+        pet.addOwner(owner);
+        petRepository.save(pet);
+
+        //when
+        Pet findPet = petRepository.findByIdForEditView(pet.getId()).orElseThrow();
+
+        //then
+        assertEquals(findPet.getId(), pet.getId());
+        assertNotNull(findPet.getOwner());
+        assertEquals(findPet.getOwner().getId(), owner.getId());
+    }
+
+    @Test
     void Pet_수정() throws Exception {
 
         //given
@@ -109,11 +125,11 @@ class RepositoryTest {
         Pet pet = PetDummy.createPet(petRepository.getPetTypes().get(0));
         pet.addOwner(owner);
         petRepository.save(pet);
-        PetJoinAndEditRequestDto dto = PetDummy.createPetJoinAndEditRequestDto();
+        PetJoinAndEditDto dto = PetDummy.createPetJoinAndEditRequestDto();
         PetType type = petRepository.findByPetTypeName(dto.getPetType());
 
         //when
-        pet.editPet(dto, type);
+        pet.convertDtoIntoPet(dto, type);
         em.flush();
         em.clear();
 

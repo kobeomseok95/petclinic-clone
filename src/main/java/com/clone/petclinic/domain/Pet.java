@@ -1,18 +1,14 @@
 package com.clone.petclinic.domain;
 
-import com.clone.petclinic.controller.dto.PetJoinAndEditRequestDto;
+import com.clone.petclinic.controller.dto.PetJoinAndEditDto;
 import com.clone.petclinic.domain.base.BaseTimeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-import org.apache.tomcat.jni.Local;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -59,13 +55,9 @@ public class Pet extends BaseTimeEntity {
         owner.getPets().add(this);
     }
 
-    public void editPet(PetJoinAndEditRequestDto dto, PetType type){
-        this.getOwner().getPets().remove(this);
-
-        super.editBirth(dto.getBirth());
-        this.name = dto.getName();
+    public void convertDtoIntoPet(PetJoinAndEditDto dto, PetType type){
+        super.editBirth(dto.getPetBirth());
+        this.name = dto.getPetName();
         this.petType = type;
-
-        this.getOwner().getPets().add(this);
     }
 }

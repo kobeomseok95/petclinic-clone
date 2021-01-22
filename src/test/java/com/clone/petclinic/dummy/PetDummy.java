@@ -1,6 +1,6 @@
 package com.clone.petclinic.dummy;
 
-import com.clone.petclinic.controller.dto.PetJoinAndEditRequestDto;
+import com.clone.petclinic.controller.dto.PetJoinAndEditDto;
 import com.clone.petclinic.domain.Pet;
 import com.clone.petclinic.domain.PetType;
 
@@ -18,10 +18,10 @@ public class PetDummy {
                 .build();
     }
 
-    public static PetJoinAndEditRequestDto createPetJoinAndEditRequestDto() {
-        return PetJoinAndEditRequestDto.builder()
-                .name("edit")
-                .birth("2099-01-01")
+    public static PetJoinAndEditDto createPetJoinAndEditRequestDto() {
+        return PetJoinAndEditDto.builder()
+                .petName("edit")
+                .petBirth("2099-01-01")
                 .petType("snake")
                 .build();
     }
