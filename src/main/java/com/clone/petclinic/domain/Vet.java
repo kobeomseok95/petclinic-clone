@@ -25,4 +25,6 @@ public class Vet {
 
     @OneToMany(mappedBy = "vet")
     private Set<VetSpeciality> specialities = new HashSet<>();
+
+
 }

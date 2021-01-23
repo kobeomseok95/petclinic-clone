@@ -27,4 +27,8 @@ public class VetSpeciality {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "speciality_id")
     private Speciality speciality;
+
+    public void addVetAndSpeciality(Vet vet) {
+        vet.getSpecialities().add(this);
+    }
 }
