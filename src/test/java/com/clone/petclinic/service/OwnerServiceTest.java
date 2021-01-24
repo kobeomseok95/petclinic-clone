@@ -10,7 +10,6 @@ import com.clone.petclinic.dummy.OwnerDummy;
 import com.clone.petclinic.repository.OwnerRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,14 +19,13 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OwnerServiceTest {
 
     @InjectMocks
-    OwnerService ownerService;
+    OwnerServiceImpl ownerService;
 
     @Mock
     OwnerRepository ownerRepository;
@@ -54,22 +52,21 @@ class OwnerServiceTest {
         OwnerJoinAndEditRequestDto dto = getOwnerJoinRequestDto();
         Owner target = getTargetOwner();
         dto.setId(5L);
-        when(ownerRepository.findById(any(Long.class)))
+        when(ownerRepository.findByIdFetch(any(Long.class)))
                 .thenReturn(Optional.of(target));
 
         //when
-        ownerService.edit(dto);
+        OwnerOneResponseDto edit = ownerService.edit(dto.getId(), dto);
 
         //then
-        verify(ownerRepository, atLeastOnce()).findById(any(Long.class));
+        verify(ownerRepository, atLeastOnce()).findByIdFetch(any(Long.class));
         assertAll(
-                () -> assertEquals(target.getId(), 5L),
-                () -> assertEquals(target.getFirstName(), "test"),
-                () -> assertEquals(target.getLastName(), "test"),
-                () -> assertEquals(target.getPhone(), "test"),
-                () -> assertEquals(target.getAddress().getCity(), "test"),
-                () -> assertEquals(target.getAddress().getStreet(), "test"),
-                () -> assertEquals(target.getAddress().getZipcode(), "test")
+                () -> assertEquals(edit.getId(), "5"),
+                () -> assertEquals(edit.getName(), "test test"),
+                () -> assertEquals(edit.getPhone(), "test"),
+                () -> assertEquals(edit.getCity(), "test"),
+                () -> assertEquals(edit.getStreet(), "test"),
+                () -> assertEquals(edit.getZipcode(), "test")
         );
     }
 
@@ -87,9 +84,9 @@ class OwnerServiceTest {
         verify(ownerRepository, atLeastOnce()).findByIdFetch(any(Long.class));
         assertEquals(one.getPets().size(), 2);
 
-        for (OwnersPetDto pet : one.getPets()) {
+        for (OwnerPetsResponseDto pet : one.getPets()) {
             assertEquals(pet.getVisits().size(), 2);
-            for (PetsVisitDto visit : pet.getVisits()) {
+            for (PetsVisitResponseDto visit : pet.getVisits()) {
                 assertNotNull(visit);
             }
         }

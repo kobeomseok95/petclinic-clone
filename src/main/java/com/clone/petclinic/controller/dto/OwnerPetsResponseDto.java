@@ -11,18 +11,19 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OwnersPetDto {
+public class OwnerPetsResponseDto {
+    private String id;
     private String name;
     private String birth;
     private String type;
-    private List<PetsVisitDto> visits;
+    private List<PetsVisitResponseDto> visits;
 
-    public OwnersPetDto(Pet pet){
+    public OwnerPetsResponseDto(Pet pet){
         name = pet.getName();
         birth = pet.getDate().toString();
         type = pet.getPetType().getName();
         visits = pet.getVisits().stream()
-                .map(PetsVisitDto::new)
+                .map(PetsVisitResponseDto::new)
                 .collect(Collectors.toList());
     }
 }

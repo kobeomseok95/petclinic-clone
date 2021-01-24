@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Builder
 public class OwnerMultipleResponseDto {
 
-    private Long id;
+    private String id;
     private String name;
     private String address;
     private String city;
@@ -22,7 +22,7 @@ public class OwnerMultipleResponseDto {
     private List<String> petNames;
 
     public OwnerMultipleResponseDto(Owner owner) {
-        this.id = owner.getId();
+        this.id = owner.getId().toString();
         this.name = owner.getLastName() + " " + owner.getFirstName();
         this.address = owner.getAddress().getStreet() + " " + owner.getAddress().getZipcode();
         this.city = owner.getAddress().getCity();

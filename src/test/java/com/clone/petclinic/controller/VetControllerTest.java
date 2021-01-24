@@ -47,8 +47,7 @@ class VetControllerTest {
                 .contentType(MediaType.APPLICATION_JSON));
         
         //then
-        actions
-                .andExpect(status().isOk())
+        actions.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].name", is("vet1")))
                 .andExpect(jsonPath("$[0].specialities[0]", is("test1")))
@@ -57,6 +56,8 @@ class VetControllerTest {
                 .andExpect(jsonPath("$[1].specialities[0]", is("test2")))
                 .andExpect(jsonPath("$[1].specialities[1]", is("test3")))
                 .andDo(print());
+        verify(vetService, times(1))
+                .getVetsAndSpecialities();
     }
 
     private List<VetsDto> createVetsDto() {

@@ -3,7 +3,6 @@ package com.clone.petclinic.controller.dto;
 import com.clone.petclinic.domain.Pet;
 import lombok.*;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +22,7 @@ public class VisitViewDto {
     private String petType;
     private String description;
 
-    private List<PetsVisitDto> visits;
+    private List<PetsVisitResponseDto> visits;
 
     public VisitViewDto(Pet pet) {
         ownerId = pet.getOwner().getId();
@@ -33,7 +32,7 @@ public class VisitViewDto {
         petBirth = pet.getDate().toString();
         petType = pet.getPetType().getName();
         visits = pet.getVisits().stream()
-                .map(PetsVisitDto::new)
+                .map(PetsVisitResponseDto::new)
                 .collect(Collectors.toList());
     }
 }
