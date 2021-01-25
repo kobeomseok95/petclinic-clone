@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @Builder
 @Getter
 @Setter
-public class VisitViewDto {
+public class VisitResponseDto {
 
     private Long ownerId;
     private String ownerName;
@@ -24,7 +24,7 @@ public class VisitViewDto {
 
     private List<PetsVisitResponseDto> visits;
 
-    public VisitViewDto(Pet pet) {
+    public VisitResponseDto(Pet pet) {
         ownerId = pet.getOwner().getId();
         ownerName = pet.getOwner().getFirstName() + " " + pet.getOwner().getLastName();
         petId = pet.getId();

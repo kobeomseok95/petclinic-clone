@@ -94,7 +94,7 @@ class PetServiceTest {
                 .thenReturn(Optional.of(owner));
 
         //when
-        OwnerOneResponseDto responseDto = petService.editPet(dto);
+        OwnerOneResponseDto responseDto = petService.editPet(null, null, dto);  //수정
 
         //then
         verify(petRepository, times(1))

@@ -23,6 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(PetController.class)
@@ -70,13 +71,14 @@ class PetControllerTest {
         //given
         PetJoinAndEditDto requestDto = createPetEditRequestDto();
         OwnerOneResponseDto responseDto = createOwnerOneResponseDtoForPetEdit(requestDto);
-        when(petService.editPet(any(PetJoinAndEditDto.class)))
+        when(petService.editPet(any(Long.class), any(Long.class), any(PetJoinAndEditDto.class)))
                 .thenReturn(responseDto);
 
         //when, then
-        mockMvc.perform(put("/owners/{id}/pets/{petId}/edit", requestDto.getOwnerId(), requestDto.getPetId())
+        mockMvc.perform(put("/owners/{ownerId}/pets/{petId}/edit", 1L, 1L)
+                        .content(objectMapper.writeValueAsString(requestDto))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto)))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is("1")))
@@ -85,7 +87,8 @@ class PetControllerTest {
                 .andExpect(jsonPath("$.pets[0].id", is("1")))
                 .andExpect(jsonPath("$.pets[0].birth").exists())
                 .andExpect(jsonPath("$.pets[0].name", is("edit")))
-                .andExpect(jsonPath("$.pets[0].type", is("bird")));
+                .andExpect(jsonPath("$.pets[0].type", is("bird")))
+                .andDo(print());
     }
 
     private OwnerOneResponseDto createOwnerOneResponseDtoForPetEdit(PetJoinAndEditDto request) {

@@ -9,5 +9,5 @@ public interface PetService {
 
     PetJoinAndEditDto editPetView(Long id);
 
-    OwnerOneResponseDto editPet(PetJoinAndEditDto dto);
+    OwnerOneResponseDto editPet(Long ownerId, Long petId, PetJoinAndEditDto dto);
 }

@@ -41,14 +41,14 @@ public class PetServiceImpl implements PetService {
         return dto;
     }
 
-    public OwnerOneResponseDto editPet(PetJoinAndEditDto dto) {
-        Pet pet = petRepository.findById(Long.valueOf(dto.getPetId()))
+    public OwnerOneResponseDto editPet(Long ownerId, Long petId, PetJoinAndEditDto dto) {
+        Pet pet = petRepository.findById(petId)
                 .orElseThrow();
         PetType type = petRepository.findByPetTypeName(dto.getPetType());
 
         pet.convertDtoIntoPet(dto, type);
 
-        Owner owner = ownerRepository.findByIdFetch(Long.valueOf(dto.getOwnerId())).orElseThrow();
+        Owner owner = ownerRepository.findByIdFetch(ownerId).orElseThrow();
         return new OwnerOneResponseDto(owner);
     }
 }

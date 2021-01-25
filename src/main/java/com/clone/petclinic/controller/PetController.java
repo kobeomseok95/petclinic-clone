@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/owners/{id}")
+@RequestMapping("/owners/{ownerId}")
 public class PetController {
 
     private final PetService petService;
@@ -20,7 +20,9 @@ public class PetController {
     }
 
     @PutMapping("/pets/{petId}/edit")
-    public OwnerOneResponseDto editPet(@RequestBody PetJoinAndEditDto request) {
-        return petService.editPet(request);
+    public OwnerOneResponseDto editPet(@PathVariable("ownerId") Long ownerId,
+                                        @PathVariable("petId") Long petId,
+                                        @RequestBody PetJoinAndEditDto request) {
+        return petService.editPet(ownerId, petId, request);
     }
 }
