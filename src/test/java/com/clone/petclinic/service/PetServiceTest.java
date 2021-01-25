@@ -1,5 +1,6 @@
 package com.clone.petclinic.service;
 
+import com.clone.petclinic.controller.dto.OwnerOneResponseDto;
 import com.clone.petclinic.controller.dto.PetJoinAndEditDto;
 import com.clone.petclinic.domain.Owner;
 import com.clone.petclinic.domain.Pet;
@@ -29,29 +30,32 @@ class PetServiceTest {
     @Mock
     PetRepository petRepository;
     @InjectMocks
-    PetService petService;
+    PetServiceImpl petService;
 
     @Test
     void Pet_등록() throws Exception {
 
         //given
-        when(ownerRepository.findById(any(Long.class)))
-                .thenReturn(Optional.of(createOwner()));
+        PetJoinAndEditDto requestDto = createPetJoinAndEditRequestDto();
+        Owner owner = createOwner();
+        PetType type = createPetType();
+        when(ownerRepository.findByIdFetch(any(Long.class)))
+                .thenReturn(Optional.of(owner));
         when(petRepository.findByPetTypeName(any(String.class)))
-                .thenReturn(createPetType());
+                .thenReturn(type);
 
         //when
-        Long ownerId = petService.addPet(createPetJoinAndEditRequestDto());
+        OwnerOneResponseDto responseDto = petService.addPet(requestDto);
 
         //then
         verify(ownerRepository, times(1))
-                .findById(any(Long.class));
+                .findByIdFetch(any(Long.class));
         verify(petRepository, times(1))
                 .findByPetTypeName(any(String.class));
         verify(petRepository, times(1))
                 .save(any(Pet.class));
 
-        assertEquals(ownerId, createOwner().getId());
+        assertEquals(responseDto.getId(), createOwner().getId().toString());
     }
 
     @Test
@@ -69,8 +73,8 @@ class PetServiceTest {
                 .findByPetIdWithOwner(any(Long.class));
         assertAll(
                 () -> assertNotNull(petJoinAndEditDto),
-                () -> assertEquals(petJoinAndEditDto.getPetId(), createPet().getId()),
-                () -> assertEquals(petJoinAndEditDto.getOwnerId(), createPet().getOwner().getId())
+                () -> assertEquals(petJoinAndEditDto.getPetId(), createPet().getId().toString()),
+                () -> assertEquals(petJoinAndEditDto.getOwnerId(), createPet().getOwner().getId().toString())
         );
     }
 
@@ -80,21 +84,25 @@ class PetServiceTest {
         //given
         Pet testPet = createPet();
         PetJoinAndEditDto dto = createPetJoinAndEditRequestDto();
-        when(petRepository.findById(dto.getPetId()))
+        dto.setPetId("1");
+        Owner owner = createOwner();
+        when(petRepository.findById(Long.valueOf(dto.getPetId())))
                 .thenReturn(Optional.of(testPet));
         when(petRepository.findByPetTypeName(dto.getPetType()))
                 .thenReturn(createPetTypeBird());
+        when(ownerRepository.findByIdFetch(any(Long.class)))
+                .thenReturn(Optional.of(owner));
 
         //when
-        Long ownerId = petService.editPet(dto);
+        OwnerOneResponseDto responseDto = petService.editPet(dto);
 
         //then
         verify(petRepository, times(1))
-                .findById(dto.getPetId());
+                .findById(Long.valueOf(dto.getPetId()));
         verify(petRepository, times(1))
                 .findByPetTypeName(dto.getPetType());
         assertAll(
-                () -> assertEquals(ownerId, testPet.getOwner().getId()),
+                () -> assertEquals(responseDto.getId(), testPet.getOwner().getId().toString()),
                 () -> assertEquals(testPet.getPetType().getName(), "bird"),
                 () -> assertEquals(testPet.getDate().toString(), "1995-09-22")
         );
@@ -122,7 +130,7 @@ class PetServiceTest {
 
     private PetJoinAndEditDto createPetJoinAndEditRequestDto() {
         return PetJoinAndEditDto.builder()
-                .ownerId(1L)
+                .ownerId("1")
                 .ownerName("test")
                 .petBirth("1995-09-22")
                 .petName("test")

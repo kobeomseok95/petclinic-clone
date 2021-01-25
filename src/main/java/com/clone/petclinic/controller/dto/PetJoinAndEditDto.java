@@ -10,17 +10,17 @@ import lombok.*;
 @Setter
 public class PetJoinAndEditDto {
 
-    private Long ownerId;
+    private String ownerId;
     private String ownerName;
-    private Long petId;
+    private String petId;
     private String petName;
     private String petBirth;
     private String petType;
 
     public void convertPetIntoDto(Pet pet){
-        this.ownerId = pet.getOwner().getId();
+        this.ownerId = pet.getOwner().getId().toString();
         this.ownerName = pet.getOwner().getFirstName() + " " + pet.getOwner().getLastName();
-        this.petId = pet.getId();
+        this.petId = pet.getId().toString();
         this.petName = pet.getName();
         this.petBirth = pet.getDate().toString();
         this.petType = pet.getPetType().getName();
