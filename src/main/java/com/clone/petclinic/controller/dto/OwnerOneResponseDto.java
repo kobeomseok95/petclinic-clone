@@ -20,7 +20,7 @@ public class OwnerOneResponseDto {
     private String street;
     private String zipcode;
     private String phone;
-    private List<OwnerPetsResponseDto> pets = new ArrayList<>();
+    private List<OwnerPetsResponseDto> pets;
 
     public OwnerOneResponseDto(Owner owner) {
         id = owner.getId().toString();
@@ -29,10 +29,8 @@ public class OwnerOneResponseDto {
         street = owner.getAddress().getStreet();
         zipcode = owner.getAddress().getZipcode();
         phone = owner.getPhone();
-        if (owner.getPets() != null) {
-            pets = owner.getPets().stream()
-                    .map(OwnerPetsResponseDto::new)
-                    .collect(Collectors.toList());
-        }
+        pets = owner.getPets().stream()
+                .map(OwnerPetsResponseDto::new)
+                .collect(Collectors.toList());
     }
 }

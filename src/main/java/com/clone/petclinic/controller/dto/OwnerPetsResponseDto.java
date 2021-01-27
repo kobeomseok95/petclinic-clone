@@ -19,6 +19,7 @@ public class OwnerPetsResponseDto {
     private List<PetsVisitResponseDto> visits;
 
     public OwnerPetsResponseDto(Pet pet){
+        id = pet.getId().toString();
         name = pet.getName();
         birth = pet.getDate().toString();
         type = pet.getPetType().getName();

@@ -18,6 +18,6 @@ public class VisitController {
     public OwnerOneResponseDto createVisit(@PathVariable("ownerId") Long ownerId,
                                         @PathVariable("petId") Long petId,
                                         @RequestBody AddVisitRequestDto request) {
-        return visitService.addVisit(ownerId, petId, request);
+    return visitService.addVisit(ownerId, petId, request);
     }
 }

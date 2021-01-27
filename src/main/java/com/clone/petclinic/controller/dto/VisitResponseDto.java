@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 @Setter
 public class VisitResponseDto {
 
-    private Long ownerId;
+    private String ownerId;
     private String ownerName;
 
-    private Long petId;
+    private String petId;
     private String petName;
     private String petBirth;
     private String petType;
@@ -25,9 +25,9 @@ public class VisitResponseDto {
     private List<PetsVisitResponseDto> visits;
 
     public VisitResponseDto(Pet pet) {
-        ownerId = pet.getOwner().getId();
+        ownerId = pet.getOwner().getId().toString();
         ownerName = pet.getOwner().getFirstName() + " " + pet.getOwner().getLastName();
-        petId = pet.getId();
+        petId = pet.getId().toString();
         petName = pet.getName();
         petBirth = pet.getDate().toString();
         petType = pet.getPetType().getName();

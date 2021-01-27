@@ -86,7 +86,7 @@ class PetServiceTest {
         PetJoinAndEditDto dto = createPetJoinAndEditRequestDto();
         dto.setPetId("1");
         Owner owner = createOwner();
-        when(petRepository.findById(Long.valueOf(dto.getPetId())))
+        when(petRepository.findById(any(Long.class)))
                 .thenReturn(Optional.of(testPet));
         when(petRepository.findByPetTypeName(dto.getPetType()))
                 .thenReturn(createPetTypeBird());
@@ -94,7 +94,8 @@ class PetServiceTest {
                 .thenReturn(Optional.of(owner));
 
         //when
-        OwnerOneResponseDto responseDto = petService.editPet(null, null, dto);  //수정
+        OwnerOneResponseDto responseDto = petService.editPet(Long.valueOf(dto.getOwnerId()),
+                testPet.getId(), dto);
 
         //then
         verify(petRepository, times(1))
