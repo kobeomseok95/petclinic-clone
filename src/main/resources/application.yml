@@ -14,6 +14,10 @@ spring:
         format_sql: true
 #        default_batch_fetch_size: 100
     open-in-view: false
+# 캐시 설정
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
 
 logging.level:
   org.hibernate.SQL: debug
