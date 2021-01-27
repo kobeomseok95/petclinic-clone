@@ -5,9 +5,9 @@ import com.clone.petclinic.controller.dto.PetJoinAndEditDto;
 
 public interface PetService {
 
-    OwnerOneResponseDto addPet(PetJoinAndEditDto dto);
+    void addPet(Long ownerId, PetJoinAndEditDto dto);
 
     PetJoinAndEditDto editPetView(Long id);
 
-    OwnerOneResponseDto editPet(Long ownerId, Long petId, PetJoinAndEditDto dto);
+    void editPet(Long ownerId, Long petId, PetJoinAndEditDto dto);
 }

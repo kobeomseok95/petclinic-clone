@@ -38,7 +38,7 @@ public class Owner {
     private String phone;
 
     @OneToMany(mappedBy = "owner")
-    private Set<Pet> pets = new HashSet<Pet>();
+    private Set<Pet> pets = new HashSet<>();
 
     //====연관관계 편의 메서드====
     public void convertOwner(OwnerJoinAndEditRequestDto dto) {
@@ -50,5 +50,12 @@ public class Owner {
                 .zipcode(dto.getZipcode())
                 .build();
         this.phone = dto.getPhone();
+    }
+
+    public void addPets(Pet pet) {
+        if (pets == null) {
+            pets = new HashSet<>();
+        }
+        pets.add(pet);
     }
 }

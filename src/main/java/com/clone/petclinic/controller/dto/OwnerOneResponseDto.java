@@ -1,10 +1,12 @@
 package com.clone.petclinic.controller.dto;
 
 import com.clone.petclinic.domain.Owner;
+import com.clone.petclinic.domain.Pet;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter

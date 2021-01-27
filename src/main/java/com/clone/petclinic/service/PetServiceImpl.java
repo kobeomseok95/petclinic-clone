@@ -20,16 +20,12 @@ public class PetServiceImpl implements PetService {
     private final OwnerRepository ownerRepository;
     private final PetRepository petRepository;
 
-    public OwnerOneResponseDto addPet(PetJoinAndEditDto dto) {
-        Owner owner = ownerRepository.findByIdFetch(Long.valueOf(dto.getOwnerId())).orElseThrow();
-
-        Pet pet = new Pet();
+    public void addPet(Long ownerId, PetJoinAndEditDto dto) {
+        Owner owner = ownerRepository.findByIdFetch(ownerId).orElseThrow();
         PetType type = petRepository.findByPetTypeName(dto.getPetType());
-        pet.convertDtoIntoPet(dto, type);
-        pet.addOwner(owner);
-        petRepository.save(pet);
 
-        return new OwnerOneResponseDto(owner);
+        Pet pet = new Pet(owner, type, dto);
+        petRepository.save(pet);
     }
 
     @Transactional(readOnly = true)
@@ -41,14 +37,11 @@ public class PetServiceImpl implements PetService {
         return dto;
     }
 
-    public OwnerOneResponseDto editPet(Long ownerId, Long petId, PetJoinAndEditDto dto) {
+    public void editPet(Long ownerId, Long petId, PetJoinAndEditDto dto) {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow();
         PetType type = petRepository.findByPetTypeName(dto.getPetType());
 
         pet.convertDtoIntoPet(dto, type);
-
-        Owner owner = ownerRepository.findByIdFetch(ownerId).orElseThrow();
-        return new OwnerOneResponseDto(owner);
     }
 }

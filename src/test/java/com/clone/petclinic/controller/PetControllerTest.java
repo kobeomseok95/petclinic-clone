@@ -44,8 +44,8 @@ class PetControllerTest {
         //given
         PetJoinAndEditDto request = createPetJoinDto();
         OwnerOneResponseDto response = createOneResponseDto(request);
-        when(petService.addPet(any(PetJoinAndEditDto.class)))
-                .thenReturn(response);
+//        when(petService.addPet(any(Long.class), any(PetJoinAndEditDto.class)))
+//                .thenReturn(response);
 
         //when, then
         mockMvc.perform(post("/owners/{id}/pets/new", response.getId())
@@ -71,8 +71,8 @@ class PetControllerTest {
         //given
         PetJoinAndEditDto requestDto = createPetEditRequestDto();
         OwnerOneResponseDto responseDto = createOwnerOneResponseDtoForPetEdit(requestDto);
-        when(petService.editPet(any(Long.class), any(Long.class), any(PetJoinAndEditDto.class)))
-                .thenReturn(responseDto);
+//        when(petService.editPet(any(Long.class), any(Long.class), any(PetJoinAndEditDto.class)))
+//                .thenReturn(responseDto);
 
         //when, then
         mockMvc.perform(put("/owners/{ownerId}/pets/{petId}/edit", 1L, 1L)

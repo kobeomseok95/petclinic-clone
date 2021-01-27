@@ -46,13 +46,21 @@ public class Pet extends BaseTimeEntity {
         this.visits = visits;
     }
 
+    //====생성 편의====
+    public Pet(Owner owner, PetType type, PetJoinAndEditDto dto) {
+        addOwner(owner);
+        this.petType = type;
+        this.name = dto.getPetName();
+        this.date = LocalDate.parse(dto.getPetBirth());
+    }
+
     //====연관관계 편의 메서드====
     public void addOwner(Owner owner) {
         if (this.owner != null) {
             throw new IllegalStateException("이미 주인이 있습니다.");
         }
         this.owner = owner;
-        owner.getPets().add(this);
+        owner.addPets(this);
     }
 
     public void convertDtoIntoPet(PetJoinAndEditDto dto, PetType type){
