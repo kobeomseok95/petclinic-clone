@@ -19,14 +19,14 @@ public class OwnerController {
     @PostMapping("/new")
     public OwnerOneResponseDto join(@RequestBody OwnerJoinAndEditRequestDto dto) {
         Long ownerId = ownerService.join(dto);
-        return OwnerOneResponseDto.builder()
-                .id(ownerId.toString())
-                .name(dto.getFirstName() + " " + dto.getLastName())
-                .city(dto.getCity())
-                .street(dto.getStreet())
-                .zipcode(dto.getZipcode())
-                .phone(dto.getPhone())
-                .build();
+        return ownerService.findOne(ownerId);
+    }
+
+    @PutMapping("/{id}")
+    public OwnerOneResponseDto editOwner(@PathVariable("id") Long ownerId,
+                                         @RequestBody OwnerJoinAndEditRequestDto request) {
+        ownerService.edit(ownerId, request);
+        return ownerService.findOne(ownerId);
     }
 
     @GetMapping("")
@@ -40,11 +40,5 @@ public class OwnerController {
     @GetMapping("/{id}")
     public OwnerOneResponseDto ownerOne(@PathVariable("id") Long ownerId){
         return ownerService.findOne(ownerId);
-    }
-
-    @PutMapping("/{id}")
-    public OwnerOneResponseDto editOwner(@PathVariable("id") Long ownerId,
-                                         @RequestBody OwnerJoinAndEditRequestDto request) {
-        return ownerService.edit(ownerId, request);
     }
 }

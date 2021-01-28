@@ -25,17 +25,16 @@ public class OwnerServiceImpl implements OwnerService {
     @Transactional
     public Long join(OwnerJoinAndEditRequestDto dto) {
         Owner owner = new Owner();
-        owner.convertOwner(dto);
+        owner.saveOrEdit(dto);
         Owner savedOwner = ownerRepository.save(owner);
         return savedOwner.getId();
     }
 
     @Override
     @Transactional
-    public OwnerOneResponseDto edit(Long ownerId, OwnerJoinAndEditRequestDto dto){
-        Owner owner = ownerRepository.findByIdFetch(ownerId).orElseThrow();
-        owner.convertOwner(dto);
-        return new OwnerOneResponseDto(owner);
+    public void edit(Long ownerId, OwnerJoinAndEditRequestDto dto){
+        Owner owner = ownerRepository.findById(ownerId).orElseThrow();
+        owner.saveOrEdit(dto);
     }
 
     @Override

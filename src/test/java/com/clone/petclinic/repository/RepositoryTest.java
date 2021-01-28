@@ -63,7 +63,7 @@ class RepositoryTest {
         OwnerJoinAndEditRequestDto dto = OwnerDummy.createOwnerJoinAndEditRequestDto();
 
         //when
-        owner.convertOwner(dto);
+        owner.saveOrEdit(dto);
         Owner editOwner = ownerRepository.findById(savedOwner.getId()).orElseThrow();
 
         assertAll(

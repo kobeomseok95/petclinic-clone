@@ -6,8 +6,8 @@ import com.clone.petclinic.domain.Pet;
 import com.clone.petclinic.domain.PetType;
 import com.clone.petclinic.domain.Visit;
 import com.clone.petclinic.domain.base.Address;
-import com.clone.petclinic.dummy.OwnerDummy;
 import com.clone.petclinic.repository.OwnerRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,43 +30,86 @@ class OwnerServiceTest {
     @Mock
     OwnerRepository ownerRepository;
 
+    Owner owner;
+    Owner owner2;
+    Owner owner3;
+
+    @BeforeEach
+    void setup() throws Exception {
+        owner = Owner.builder()
+                .id(3L)
+                .firstName("test")
+                .lastName("test")
+                .phone("test")
+                .address(Address.builder()
+                        .city("test")
+                        .street("test")
+                        .zipcode("test")
+                        .build())
+                .pets(getPets())
+                .build();
+        owner2 = Owner.builder()
+                .id(4L)
+                .firstName("test")
+                .lastName("test2")
+                .phone("test")
+                .address(Address.builder()
+                        .city("test")
+                        .street("test")
+                        .zipcode("test")
+                        .build())
+                .pets(getPets())
+                .build();
+        owner3 = Owner.builder()
+                .id(5L)
+                .firstName("test")
+                .lastName("last")
+                .phone("test")
+                .address(Address.builder()
+                        .city("test")
+                        .street("test")
+                        .zipcode("test")
+                        .build())
+                .pets(getPets())
+                .build();
+    }
+
     @Test
     void owner_등록() throws Exception {
 
         //given
-        OwnerJoinAndEditRequestDto dto = OwnerDummy.createOwnerJoinAndEditRequestDto();
+        OwnerJoinAndEditRequestDto requestDto = createOwnerJoinRequestDto();
         when(ownerRepository.save(any(Owner.class)))
-                .thenReturn(getOwner(dto));
+                .thenReturn(owner);
 
         //when
-        Long join = ownerService.join(dto);
+        Long join = ownerService.join(requestDto);
 
         //then
         verify(ownerRepository, atLeastOnce()).save(any(Owner.class));
-        assertEquals(join, 10L);
+        assertEquals(join, owner.getId());
     }
 
     @Test
     void owner_수정() throws Exception {
+
         //given
-        OwnerJoinAndEditRequestDto dto = getOwnerJoinRequestDto();
-        Owner target = getTargetOwner();
-        dto.setId(5L);
-        when(ownerRepository.findByIdFetch(any(Long.class)))
-                .thenReturn(Optional.of(target));
+        OwnerJoinAndEditRequestDto dto = getOwnerEditRequestDto();
+        when(ownerRepository.findById(any(Long.class)))
+                .thenReturn(Optional.of(owner));
 
         //when
-        OwnerOneResponseDto edit = ownerService.edit(dto.getId(), dto);
+        ownerService.edit(owner.getId(), dto);
 
         //then
-        verify(ownerRepository, atLeastOnce()).findByIdFetch(any(Long.class));
+        verify(ownerRepository).findById(any(Long.class));
         assertAll(
-                () -> assertEquals(edit.getId(), "5"),
-                () -> assertEquals(edit.getName(), "test test"),
-                () -> assertEquals(edit.getPhone(), "test"),
-                () -> assertEquals(edit.getCity(), "test"),
-                () -> assertEquals(edit.getStreet(), "test"),
-                () -> assertEquals(edit.getZipcode(), "test")
+                () -> assertEquals(owner.getFirstName(), "edit"),
+                () -> assertEquals(owner.getLastName(), "edit"),
+                () -> assertEquals(owner.getPhone(), "edit"),
+                () -> assertEquals(owner.getAddress().getCity(), "edit"),
+                () -> assertEquals(owner.getAddress().getStreet(), "edit"),
+                () -> assertEquals(owner.getAddress().getZipcode(), "edit")
         );
     }
 
@@ -75,10 +118,10 @@ class OwnerServiceTest {
         
         //given
         when(ownerRepository.findByIdFetch(any(Long.class)))
-                .thenReturn(Optional.of(getOwnerDetail()));
+                .thenReturn(Optional.of(owner));
         
         //when
-        OwnerOneResponseDto one = ownerService.findOne(20L);
+        OwnerOneResponseDto one = ownerService.findOne(owner.getId());
         
         //then
         verify(ownerRepository, atLeastOnce()).findByIdFetch(any(Long.class));
@@ -93,17 +136,17 @@ class OwnerServiceTest {
     }
 
     @Test
-    void owner_다수_조회() throws Exception{
+    void owner_다수_조회_성공() throws Exception{
 
         //given
         when(ownerRepository.findByLastName(any(String.class)))
-                .thenReturn(getOwners());
+                .thenReturn(Arrays.asList(owner, owner2, owner3));
 
         //when
-        List<OwnerMultipleResponseDto> dtos = ownerService.findByLastName("owner1");
+        List<OwnerMultipleResponseDto> dtos = ownerService.findByLastName("test");
 
         //then
-        verify(ownerRepository, atLeastOnce()).findByLastName("owner1");
+        verify(ownerRepository, atLeastOnce()).findByLastName(any(String.class));
         assertEquals(dtos.size(), 3);
         for (OwnerMultipleResponseDto dto : dtos) {
             assertNotNull(dto);
@@ -111,95 +154,42 @@ class OwnerServiceTest {
         }
     }
 
+    @Test
+    void owner_다수_조회_아무도_없을_경우() throws Exception{
 
-    private Collection<Owner> getOwners() {
-        return Arrays.asList(
-                Owner.builder().id(1L).firstName("owner1").lastName("owner1").phone("test1")
-                        .address(Address.builder().city("owner1").street("owner1").zipcode("owner1").build())
-                        .pets(createPets()).build(),
-                Owner.builder().id(1L).firstName("owner1").lastName("owner1").phone("test1")
-                        .address(Address.builder().city("owner1").street("owner1").zipcode("owner1").build())
-                        .pets(createPets()).build(),
-                Owner.builder().id(1L).firstName("owner1").lastName("owner1").phone("test1")
-                        .address(Address.builder().city("owner1").street("owner1").zipcode("owner1").build())
-                        .pets(createPets()).build()
-        );
+        //given
+        when(ownerRepository.findByLastName(any(String.class)))
+                .thenReturn(Collections.emptyList());
+
+        //when
+        List<OwnerMultipleResponseDto> dtos = ownerService.findByLastName("test");
+
+        //then
+        verify(ownerRepository, atLeastOnce()).findByLastName(any(String.class));
+        assertEquals(dtos.size(), 0);
     }
 
-    private Set<Pet> createPets() {
-        Set<Pet> pets = new HashSet<>();
-        pets.add(
-            Pet.builder().id(2L).name("pet1").date(LocalDate.now()).build()
-        );
-        pets.add(
-                Pet.builder().id(3L).name("pet2").date(LocalDate.now()).build()
-        );
-        return pets;
-    }
-
-    private Owner getTargetOwner() {
-        Owner owner = Owner.builder()
-                .firstName("before")
-                .lastName("before")
-                .phone("before")
-                .address(
-                        Address.builder()
-                                .city("before")
-                                .street("before")
-                                .zipcode("before")
-                                .build()
-                )
-                .build();
-
-        ReflectionTestUtils.setField(owner, "id", 5L);
-        return owner;
-    }
-
-    private Owner getOwner(OwnerJoinAndEditRequestDto dto) {
-        Owner owner = Owner.builder()
-                .firstName(dto.getFirstName())
-                .lastName(dto.getLastName())
-                .phone(dto.getPhone())
-                .address(
-                        Address.builder()
-                                .city(dto.getCity())
-                                .street(dto.getStreet())
-                                .zipcode(dto.getZipcode())
-                                .build()
-                )
-                .build();
-
-        ReflectionTestUtils.setField(owner, "id", 10L);
-        return owner;
-    }
-
-    private OwnerJoinAndEditRequestDto getOwnerJoinRequestDto() {
+    private OwnerJoinAndEditRequestDto createOwnerJoinRequestDto() {
         return OwnerJoinAndEditRequestDto.builder()
                 .firstName("test")
                 .lastName("test")
+                .phone("1234")
                 .city("test")
                 .street("test")
                 .zipcode("test")
-                .phone("test")
                 .build();
     }
-    
-    private Owner getOwnerDetail() {
-        Owner owner = Owner.builder()
-                .firstName("test")
-                .lastName("test")
-                .phone("test")
-                .address(
-                        Address.builder()
-                                .city("test")
-                                .street("test")
-                                .zipcode("test")
-                                .build()
-                )
-                .pets(getPets())
+
+    private OwnerJoinAndEditRequestDto getOwnerEditRequestDto() {
+        return OwnerJoinAndEditRequestDto.builder()
+                .id(3L)
+                .firstName("edit")
+                .lastName("edit")
+                .city("edit")
+                .street("edit")
+                .zipcode("edit")
+                .phone("edit")
                 .build();
-        ReflectionTestUtils.setField(owner, "id", 1L);
-        return owner;
     }
 
     private Set<Pet> getPets() {

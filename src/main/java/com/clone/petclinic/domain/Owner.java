@@ -41,7 +41,7 @@ public class Owner {
     private Set<Pet> pets = new HashSet<>();
 
     //====연관관계 편의 메서드====
-    public void convertOwner(OwnerJoinAndEditRequestDto dto) {
+    public void saveOrEdit(OwnerJoinAndEditRequestDto dto) {
         this.firstName = dto.getFirstName();
         this.lastName = dto.getLastName();
         this.address = Address.builder()

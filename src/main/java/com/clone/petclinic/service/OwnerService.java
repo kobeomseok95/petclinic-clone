@@ -11,7 +11,7 @@ public interface OwnerService {
 
     Long join(OwnerJoinAndEditRequestDto dto);
 
-    OwnerOneResponseDto edit(Long id, OwnerJoinAndEditRequestDto dto);
+    void edit(Long id, OwnerJoinAndEditRequestDto dto);
 
     OwnerOneResponseDto findOne(Long ownerId);
 
