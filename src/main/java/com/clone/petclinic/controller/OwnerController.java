@@ -37,8 +37,8 @@ public class OwnerController {
         return ownerService.findByLastName(lastName);
     }
 
-    @GetMapping("/{id}")
-    public OwnerOneResponseDto ownerOne(@PathVariable("id") Long ownerId){
+    @GetMapping("/{ownerId}")
+    public OwnerOneResponseDto ownerOne(@PathVariable("ownerId") Long ownerId){
         return ownerService.findOne(ownerId);
     }
 }

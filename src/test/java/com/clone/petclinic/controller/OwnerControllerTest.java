@@ -121,39 +121,25 @@ class OwnerControllerTest {
     void owner_단건조회() throws Exception{
 
         //given
-//        OwnerOneResponseDto dto = createOwnerOneResponseDto();
-//        when(ownerService.findOne(any(Long.class)))
-//                .thenReturn(dto);
-//
-//        //when, then
-//        mockMvc.perform(get("/owners/3"))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("$.id", is("3")))
-//                .andExpect(jsonPath("$.name", is("owner3")))
-//                .andExpect(jsonPath("$.phone", is("test")))
-//                .andExpect(jsonPath("$.city", is("test")))
-//                .andExpect(jsonPath("$.street", is("test")))
-//                .andExpect(jsonPath("$.zipcode", is("test")))
-//                .andExpect(jsonPath("$.pets[0].id", is("4")))
-//                .andExpect(jsonPath("$.pets[0].name", is("owner3pet1")))
-//                .andExpect(jsonPath("$.pets[0].birth").exists())
-//                .andExpect(jsonPath("$.pets[0].type", is("snake")))
-//                .andExpect(jsonPath("$.pets[0].visits[0].visitDate").exists())
-//                .andExpect(jsonPath("$.pets[0].visits[0].description", is("test")))
-//                .andExpect(jsonPath("$.pets[0].visits[1].visitDate").exists())
-//                .andExpect(jsonPath("$.pets[0].visits[1].description", is("test")))
-//                .andExpect(jsonPath("$.pets[1].id", is("5")))
-//                .andExpect(jsonPath("$.pets[1].name", is("owner3pet2")))
-//                .andExpect(jsonPath("$.pets[1].birth").exists())
-//                .andExpect(jsonPath("$.pets[1].type", is("dog")))
-//                .andExpect(jsonPath("$.pets[1].visits[0].visitDate").exists())
-//                .andExpect(jsonPath("$.pets[1].visits[0].description", is("test")))
-//                .andExpect(jsonPath("$.pets[1].visits[1].visitDate").exists())
-//                .andExpect(jsonPath("$.pets[1].visits[1].description", is("test")))
-//                .andDo(print());
-//        verify(ownerService, times(1))
-//                .findOne(any(Long.class));
+        OwnerOneResponseDto dto = createOwnerOneResponseDto(owner);
+        when(ownerService.findOne(any(Long.class)))
+                .thenReturn(dto);
+
+        //when, then
+        mockMvc.perform(get("/owners/{ownerId}", owner.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id", is(owner.getId().toString())))
+                .andExpect(jsonPath("$.name", is(owner.getFirstName()+ " " + owner.getLastName())))
+                .andExpect(jsonPath("$.phone", is("01012341234")))
+                .andExpect(jsonPath("$.city", is("test")))
+                .andExpect(jsonPath("$.street", is("test")))
+                .andExpect(jsonPath("$.zipcode", is("test")))
+                .andExpect(jsonPath("$.pets.length()", is(1)))
+                .andExpect(jsonPath("$.pets[0].visits.length()", is(2)))
+                .andDo(print());
+        verify(ownerService)
+                .findOne(any(Long.class));
     }
 
     @Test
@@ -258,26 +244,16 @@ class OwnerControllerTest {
                 .city(owner.getAddress().getCity())
                 .street(owner.getAddress().getStreet())
                 .zipcode(owner.getAddress().getZipcode())
+                .pets(Arrays.asList(
+                        OwnerPetsResponseDto.builder()
+                                .id("1")
+                                .type("snake")
+                                .name("pet1")
+                                .visits(createVisits())
+                                .birth(LocalDate.now().toString())
+                                .build()
+                ))
                 .build();
-    }
-
-    private List<OwnerPetsResponseDto> createOwnerPets() {
-        return Arrays.asList(
-                OwnerPetsResponseDto.builder()
-                        .id("4")
-                        .name("owner3pet1")
-                        .birth(LocalDate.now().toString())
-                        .type("snake")
-                        .visits(createVisits())
-                        .build(),
-                OwnerPetsResponseDto.builder()
-                        .id("5")
-                        .name("owner3pet2")
-                        .birth(LocalDate.now().toString())
-                        .type("dog")
-                        .visits(createVisits())
-                        .build()
-        );
     }
 
     private List<PetsVisitResponseDto> createVisits() {
