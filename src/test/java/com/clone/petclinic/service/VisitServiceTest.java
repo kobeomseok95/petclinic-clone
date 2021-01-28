@@ -41,7 +41,6 @@ class VisitServiceTest {
     Owner owner;
     Pet pet;
     PetType type;
-    AddVisitRequestDto requestDto;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -103,31 +102,16 @@ class VisitServiceTest {
     void 방문일정생성() throws Exception{
 
         //given
-        requestDto = requestAddVisitDto();
+        AddVisitRequestDto requestDto = requestAddVisitDto();
         when(petRepository.findById(any(Long.class)))
                 .thenReturn(Optional.of(pet));
-        when(ownerRepository.findByIdFetch(any(Long.class)))
-                .thenReturn(Optional.of(owner));
 
         //when
-        OwnerOneResponseDto responseDto = visitService.addVisit(owner.getId(), pet.getId(), requestDto);
+        visitService.addVisit(owner.getId(), pet.getId(), requestDto);
 
         //then
-        verify(petRepository).findById(pet.getId());
+        verify(petRepository).findById(any(Long.class));
         verify(visitRepository).save(any(Visit.class));
-        verify(ownerRepository).findByIdFetch(any(Long.class));
-
-        OwnerPetsResponseDto petResponseDto = responseDto.getPets().get(0);
-        PetsVisitResponseDto visitResponseDto = petResponseDto.getVisits().get(0);
-        assertAll(
-                () -> assertEquals(responseDto.getPets().size(), 1),
-                () -> assertEquals(responseDto.getPets().get(0).getVisits().size(), 1),
-                () -> assertEquals(responseDto.getId(), "1"),
-                () -> assertEquals(petResponseDto.getId(), "2"),
-                () -> assertEquals(petResponseDto.getType(), "snake"),
-                () -> assertEquals(visitResponseDto.getVisitDate(), LocalDate.now().toString()),
-                () -> assertEquals(visitResponseDto.getDescription(), "test")
-        );
     }
 
     private AddVisitRequestDto requestAddVisitDto() {

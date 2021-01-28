@@ -8,5 +8,5 @@ public interface VisitService {
 
 
     VisitResponseDto addVisitView(Long petId);
-    OwnerOneResponseDto addVisit(Long ownerId, Long petId, AddVisitRequestDto request);
+    void addVisit(Long ownerId, Long petId, AddVisitRequestDto request);
 }

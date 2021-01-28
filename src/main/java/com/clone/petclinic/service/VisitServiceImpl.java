@@ -28,14 +28,11 @@ public class VisitServiceImpl implements VisitService {
         return new VisitResponseDto(findPet);
     }
 
-    public OwnerOneResponseDto addVisit(Long ownerId, Long petId, AddVisitRequestDto request){
+    public void addVisit(Long ownerId, Long petId, AddVisitRequestDto request){
         Visit visit = new Visit();
 
         Pet pet = petRepository.findById(petId).orElseThrow();
         visit.convertDtoIntoVisit(request, pet);
         visitRepository.save(visit);
-
-        Owner owner = ownerRepository.findByIdFetch(ownerId).orElseThrow();
-        return new OwnerOneResponseDto(owner);
     }
 }

@@ -1,6 +1,7 @@
 package com.clone.petclinic.controller;
 
 import com.clone.petclinic.controller.dto.*;
+import com.clone.petclinic.service.OwnerService;
 import com.clone.petclinic.service.VisitService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -33,13 +34,16 @@ class VisitControllerTest {
     @MockBean
     VisitService visitService;
 
+    @MockBean
+    OwnerService ownerService;
+
     @Test
     void visit_추가() throws Exception{
 
         //given
         AddVisitRequestDto requestDto = createAddVisitRequestDto();
         OwnerOneResponseDto responseDto = createOwnerOneResponseDto();
-        when(visitService.addVisit(any(Long.class), any(Long.class), any(AddVisitRequestDto.class)))
+        when(ownerService.findOne(any(Long.class)))
                 .thenReturn(responseDto);
 
         //when, then
