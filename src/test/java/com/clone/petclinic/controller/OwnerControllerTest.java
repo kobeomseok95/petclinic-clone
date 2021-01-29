@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -176,6 +179,44 @@ class OwnerControllerTest {
                 .andExpect(jsonPath("$.[2].phone", is("test3")))
                 .andExpect(jsonPath("$.[2].petNames[0]", is("owner3pet1")))
                 .andExpect(jsonPath("$.[2].petNames[1]", is("owner3pet2")));
+    }
+
+    @Test
+    void NotBlank_Validation() throws Exception {
+
+        //given
+        OwnerJoinAndEditRequestDto requestDto = OwnerJoinAndEditRequestDto.builder()
+                .firstName("")
+                .lastName("gdgd")
+                .build();
+
+        //when, then
+        mockMvc.perform(post("/owners/new")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().is4xxClientError())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException))
+                .andDo(print());
+    }
+
+    @Test
+    void phone_Pattern_Validation() throws Exception {
+
+        //given
+        OwnerJoinAndEditRequestDto requestDto = OwnerJoinAndEditRequestDto.builder()
+                .firstName("gdgd")
+                .lastName("gdgd")
+                .city("gdgd")
+                .phone("0101234-1234")
+                .build();
+
+        //when, then
+        mockMvc.perform(post("/owners/new")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().is4xxClientError())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException))
+                .andDo(print());
     }
 
     private OwnerOneResponseDto createOwnerEditResponseDto(OwnerJoinAndEditRequestDto editRequest) {

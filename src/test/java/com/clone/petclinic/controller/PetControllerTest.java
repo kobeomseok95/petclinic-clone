@@ -83,7 +83,7 @@ class PetControllerTest {
     }
 
     @Test
-    void pet_등록() throws Exception{
+    void pet_등록() throws Exception {
 
         //given
         PetJoinAndEditRequestDto requestDto = createPetJoinRequestDto(owner);
@@ -108,7 +108,7 @@ class PetControllerTest {
     }
 
     @Test
-    void pet_수정() throws Exception{
+    void pet_수정() throws Exception {
 
         //given
         PetJoinAndEditRequestDto requestDto = createPetEditRequestDto(owner, pet);
