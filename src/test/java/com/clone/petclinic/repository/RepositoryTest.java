@@ -1,7 +1,7 @@
 package com.clone.petclinic.repository;
 
 import com.clone.petclinic.controller.dto.OwnerJoinAndEditRequestDto;
-import com.clone.petclinic.controller.dto.PetJoinAndEditDto;
+import com.clone.petclinic.controller.dto.PetJoinAndEditRequestDto;
 import com.clone.petclinic.domain.*;
 import com.clone.petclinic.dummy.OwnerDummy;
 import com.clone.petclinic.dummy.PetDummy;
@@ -125,7 +125,7 @@ class RepositoryTest {
         Pet pet = PetDummy.createPet(petRepository.getPetTypes().get(0));
         pet.addOwner(owner);
         petRepository.save(pet);
-        PetJoinAndEditDto dto = PetDummy.createPetJoinAndEditRequestDto();
+        PetJoinAndEditRequestDto dto = PetDummy.createPetJoinAndEditRequestDto();
         PetType type = petRepository.findByPetTypeName(dto.getPetType());
 
         //when

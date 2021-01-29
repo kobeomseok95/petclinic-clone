@@ -1,6 +1,6 @@
 package com.clone.petclinic.domain;
 
-import com.clone.petclinic.controller.dto.PetJoinAndEditDto;
+import com.clone.petclinic.controller.dto.PetJoinAndEditRequestDto;
 import com.clone.petclinic.domain.base.BaseTimeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,7 +47,7 @@ public class Pet extends BaseTimeEntity {
     }
 
     //====생성 편의====
-    public Pet(Owner owner, PetType type, PetJoinAndEditDto dto) {
+    public Pet(Owner owner, PetType type, PetJoinAndEditRequestDto dto) {
         addOwner(owner);
         this.petType = type;
         this.name = dto.getPetName();
@@ -63,7 +63,7 @@ public class Pet extends BaseTimeEntity {
         owner.addPets(this);
     }
 
-    public void convertDtoIntoPet(PetJoinAndEditDto dto, PetType type){
+    public void convertDtoIntoPet(PetJoinAndEditRequestDto dto, PetType type){
         super.editBirth(dto.getPetBirth());
         this.name = dto.getPetName();
         this.petType = type;

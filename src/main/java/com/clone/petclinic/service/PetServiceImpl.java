@@ -1,8 +1,7 @@
 package com.clone.petclinic.service;
 
 
-import com.clone.petclinic.controller.dto.OwnerOneResponseDto;
-import com.clone.petclinic.controller.dto.PetJoinAndEditDto;
+import com.clone.petclinic.controller.dto.PetJoinAndEditRequestDto;
 import com.clone.petclinic.domain.Owner;
 import com.clone.petclinic.domain.Pet;
 import com.clone.petclinic.domain.PetType;
@@ -20,7 +19,7 @@ public class PetServiceImpl implements PetService {
     private final OwnerRepository ownerRepository;
     private final PetRepository petRepository;
 
-    public void addPet(Long ownerId, PetJoinAndEditDto dto) {
+    public void addPet(Long ownerId, PetJoinAndEditRequestDto dto) {
         Owner owner = ownerRepository.findByIdFetch(ownerId).orElseThrow();
         PetType type = petRepository.findByPetTypeName(dto.getPetType());
 
@@ -29,15 +28,15 @@ public class PetServiceImpl implements PetService {
     }
 
     @Transactional(readOnly = true)
-    public PetJoinAndEditDto editPetView(Long id){
+    public PetJoinAndEditRequestDto editPetView(Long id){
         Pet pet = petRepository.findByPetIdWithOwner(id).orElseThrow();
 
-        PetJoinAndEditDto dto = new PetJoinAndEditDto();
+        PetJoinAndEditRequestDto dto = new PetJoinAndEditRequestDto();
         dto.convertPetIntoDto(pet);
         return dto;
     }
 
-    public void editPet(Long ownerId, Long petId, PetJoinAndEditDto dto) {
+    public void editPet(Long ownerId, Long petId, PetJoinAndEditRequestDto dto) {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow();
         PetType type = petRepository.findByPetTypeName(dto.getPetType());

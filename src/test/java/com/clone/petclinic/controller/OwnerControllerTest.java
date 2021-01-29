@@ -49,7 +49,7 @@ class OwnerControllerTest {
                 .id(10L)
                 .firstName("first")
                 .lastName("last")
-                .phone("01012341234")
+                .phone("010-1234-1234")
                 .address(
                         Address.builder()
                                 .city("test")
@@ -79,7 +79,7 @@ class OwnerControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is("10")))
                 .andExpect(jsonPath("$.name", is("first last")))
-                .andExpect(jsonPath("$.phone", is("01012341234")))
+                .andExpect(jsonPath("$.phone", is("010-1234-1234")))
                 .andExpect(jsonPath("$.city", is("test")))
                 .andExpect(jsonPath("$.street", is("test")))
                 .andExpect(jsonPath("$.zipcode", is("test")));
@@ -131,7 +131,7 @@ class OwnerControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(owner.getId().toString())))
                 .andExpect(jsonPath("$.name", is(owner.getFirstName()+ " " + owner.getLastName())))
-                .andExpect(jsonPath("$.phone", is("01012341234")))
+                .andExpect(jsonPath("$.phone", is("010-1234-1234")))
                 .andExpect(jsonPath("$.city", is("test")))
                 .andExpect(jsonPath("$.street", is("test")))
                 .andExpect(jsonPath("$.zipcode", is("test")))
@@ -194,7 +194,7 @@ class OwnerControllerTest {
                 .id(owner.getId())
                 .firstName("edit")
                 .lastName("edit")
-                .phone("01011112222")
+                .phone("010-1111-2222")
                 .city("edit")
                 .street("edit")
                 .zipcode("edit")
@@ -273,11 +273,10 @@ class OwnerControllerTest {
         return OwnerJoinAndEditRequestDto.builder()
                 .firstName("first")
                 .lastName("last")
-                .phone("01012341234")
+                .phone("010-1234-1234")
                 .city("test")
                 .street("test")
                 .zipcode("test")
                 .build();
     }
-
 }

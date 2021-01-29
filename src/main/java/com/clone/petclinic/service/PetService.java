@@ -1,13 +1,12 @@
 package com.clone.petclinic.service;
 
-import com.clone.petclinic.controller.dto.OwnerOneResponseDto;
-import com.clone.petclinic.controller.dto.PetJoinAndEditDto;
+import com.clone.petclinic.controller.dto.PetJoinAndEditRequestDto;
 
 public interface PetService {
 
-    void addPet(Long ownerId, PetJoinAndEditDto dto);
+    void addPet(Long ownerId, PetJoinAndEditRequestDto dto);
 
-    PetJoinAndEditDto editPetView(Long id);
+    PetJoinAndEditRequestDto editPetView(Long id);
 
-    void editPet(Long ownerId, Long petId, PetJoinAndEditDto dto);
+    void editPet(Long ownerId, Long petId, PetJoinAndEditRequestDto dto);
 }

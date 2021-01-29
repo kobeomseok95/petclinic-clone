@@ -1,8 +1,6 @@
 package com.clone.petclinic.service;
 
-import com.clone.petclinic.controller.dto.OwnerOneResponseDto;
-import com.clone.petclinic.controller.dto.OwnerPetsResponseDto;
-import com.clone.petclinic.controller.dto.PetJoinAndEditDto;
+import com.clone.petclinic.controller.dto.PetJoinAndEditRequestDto;
 import com.clone.petclinic.domain.Owner;
 import com.clone.petclinic.domain.Pet;
 import com.clone.petclinic.domain.PetType;
@@ -15,10 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -76,7 +72,7 @@ class PetServiceTest {
     void Pet_등록() throws Exception {
 
         //given
-        PetJoinAndEditDto requestDto = createPetJoinRequestDto(owner);
+        PetJoinAndEditRequestDto requestDto = createPetJoinRequestDto(owner);
         when(ownerRepository.findByIdFetch(any(Long.class)))
                 .thenReturn(Optional.of(owner));
         when(petRepository.findByPetTypeName(any(String.class)))
@@ -93,7 +89,7 @@ class PetServiceTest {
     void pet_수정() throws Exception {
 
         //given
-        PetJoinAndEditDto requestDto = createPetEditRequestDto(owner);
+        PetJoinAndEditRequestDto requestDto = createPetEditRequestDto(owner);
         when(petRepository.findById(any(Long.class)))
                 .thenReturn(Optional.of(pet));
         when(petRepository.findByPetTypeName(any(String.class)))
@@ -116,8 +112,8 @@ class PetServiceTest {
         );
     }
 
-    private PetJoinAndEditDto createPetEditRequestDto(Owner owner){
-        return PetJoinAndEditDto.builder()
+    private PetJoinAndEditRequestDto createPetEditRequestDto(Owner owner){
+        return PetJoinAndEditRequestDto.builder()
                 .ownerId(owner.getId().toString())
                 .ownerName(owner.getFirstName() + " " + owner.getLastName())
                 .petBirth(LocalDate.now().toString())
@@ -126,8 +122,8 @@ class PetServiceTest {
                 .build();
     }
 
-    private PetJoinAndEditDto createPetJoinRequestDto(Owner owner) {
-        return PetJoinAndEditDto.builder()
+    private PetJoinAndEditRequestDto createPetJoinRequestDto(Owner owner) {
+        return PetJoinAndEditRequestDto.builder()
                 .ownerId(owner.getId().toString())
                 .ownerName(owner.getFirstName() + " " + owner.getLastName())
                 .petBirth(LocalDate.now().toString())

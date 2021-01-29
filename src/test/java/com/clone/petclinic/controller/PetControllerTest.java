@@ -2,7 +2,7 @@ package com.clone.petclinic.controller;
 
 import com.clone.petclinic.controller.dto.OwnerOneResponseDto;
 import com.clone.petclinic.controller.dto.OwnerPetsResponseDto;
-import com.clone.petclinic.controller.dto.PetJoinAndEditDto;
+import com.clone.petclinic.controller.dto.PetJoinAndEditRequestDto;
 import com.clone.petclinic.domain.Owner;
 import com.clone.petclinic.domain.Pet;
 import com.clone.petclinic.domain.PetType;
@@ -17,15 +17,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -89,7 +86,7 @@ class PetControllerTest {
     void pet_등록() throws Exception{
 
         //given
-        PetJoinAndEditDto requestDto = createPetJoinRequestDto(owner);
+        PetJoinAndEditRequestDto requestDto = createPetJoinRequestDto(owner);
         OwnerOneResponseDto responseDto = createPetJoinResponseDto(requestDto);
         when(ownerService.findOne(any(Long.class)))
                 .thenReturn(responseDto);
@@ -114,7 +111,7 @@ class PetControllerTest {
     void pet_수정() throws Exception{
 
         //given
-        PetJoinAndEditDto requestDto = createPetEditRequestDto(owner, pet);
+        PetJoinAndEditRequestDto requestDto = createPetEditRequestDto(owner, pet);
         OwnerOneResponseDto responseDto = createOwnerOneResponseDtoForPetEdit(requestDto);
         when(ownerService.findOne(any(Long.class)))
                 .thenReturn(responseDto);
@@ -137,7 +134,7 @@ class PetControllerTest {
                 .andDo(print());
     }
 
-    private OwnerOneResponseDto createOwnerOneResponseDtoForPetEdit(PetJoinAndEditDto requestDto) {
+    private OwnerOneResponseDto createOwnerOneResponseDtoForPetEdit(PetJoinAndEditRequestDto requestDto) {
         return OwnerOneResponseDto.builder()
                 .id(requestDto.getOwnerId())
                 .name(requestDto.getOwnerName())
@@ -154,8 +151,8 @@ class PetControllerTest {
                 .build();
     }
 
-    private PetJoinAndEditDto createPetEditRequestDto(Owner owner, Pet pet) {
-        return PetJoinAndEditDto.builder()
+    private PetJoinAndEditRequestDto createPetEditRequestDto(Owner owner, Pet pet) {
+        return PetJoinAndEditRequestDto.builder()
                 .ownerId(owner.getId().toString())
                 .ownerName(owner.getFirstName() + " " + owner.getLastName())
                 .petId(pet.getId().toString())
@@ -165,8 +162,8 @@ class PetControllerTest {
                 .build();
     }
 
-    private PetJoinAndEditDto createPetJoinRequestDto(Owner owner) {
-        return PetJoinAndEditDto.builder()
+    private PetJoinAndEditRequestDto createPetJoinRequestDto(Owner owner) {
+        return PetJoinAndEditRequestDto.builder()
                 .ownerId(owner.getId().toString())
                 .ownerName(owner.getFirstName() + " " + owner.getLastName())
                 .petType("bird")
@@ -175,7 +172,7 @@ class PetControllerTest {
                 .build();
     }
 
-    private OwnerOneResponseDto createPetJoinResponseDto(PetJoinAndEditDto requestDto) {
+    private OwnerOneResponseDto createPetJoinResponseDto(PetJoinAndEditRequestDto requestDto) {
         return OwnerOneResponseDto.builder()
                 .id(owner.getId().toString())
                 .name(owner.getFirstName() + " " + owner.getLastName())
